@@ -3,14 +3,14 @@ Date: 8/22/12
 Author: Scott Halgrim, halgrim.s@ghc.org
 Functionality:
     Tokenizes the BNIN file and the mystery drugs file I was given by adding
-    space around commas and brackets ([ and ]).
+    space around commas and brackets ([ and ]) and parens and braces.
 '''
 import std_import as si
 
 # get module logger
 logger = si.logging.getLogger('org.ghri.sharp.drug_ner.tokenize')
 
-def tokenizeBnInFile(infn, outfn, seps=[',', '[', ']']):
+def tokenizeBnInFile(infn, outfn, seps=[',', '[', ']', '(', ')', '{', '}']):
     '''
     Input:
         infn - pipe-delimited file that contains BNs and INs in its last column and synonyms (?)
@@ -25,7 +25,6 @@ def tokenizeBnInFile(infn, outfn, seps=[',', '[', ']']):
 
     cols = [line.strip().split('|') for line in inlines]
 
-
     for row in cols:
         firstCol = ' '.join(row[0].split('\t'))
         for s in seps:
@@ -38,7 +37,7 @@ def tokenizeBnInFile(infn, outfn, seps=[',', '[', ']']):
 
     return
 
-def tokenizeMysteryMedsFile(infn, outfn, seps=[',', '[', ']']):
+def tokenizeMysteryMedsFile(infn, outfn, seps=[',', '[', ']', '(', ')', '{', '}']):
     '''
     Input:
         infn - file that has a med that does not start with BN or IN on each line
