@@ -1,20 +1,20 @@
 '''
-Date: 8/14/12
+Date: 10/22/12
 Author: Scott Halgrim, halgrim.s@ghc.org
 Functionality:
-    Takes a file of meds that don't start with BN or IN and filters out those
-    that start with a synonym of a BN or IN.
+    Takes the tokenized version of the BN/IN file from Sunghwan and the
+    synonym file created from the RxNav processes
+    and creates an output file with a single column with all of the
+    BNs, INs, and syns singled asciibetically
+Notes:
+    Difference between this and combine_bnin_syn_files(_2)?.py is basically the input files.
+    This is actually much closer to the original than to _2
 '''
 
 import std_import as si
 
-CREATE_SYN_SET = {
-                  "fromSunghwanFile":lambda x: set([' '.join(line.split('|')[0].split('\t')) for line in x]),
-                  "fromRxNavResults":lambda x: set([line.split('\t')[0] for line in x])
-                  }
-
 # get module logger
-logger = si.logging.getLogger('org.ghri.sharp.drug_ner.filter_out_syn_initial_meds')
+logger = si.logging.getLogger('org.ghri.sharp.drug_ner.combine_bnin_syn_files_3')
 
 if __name__ == '__main__':                  # if run as main, not if imported
     
@@ -34,31 +34,18 @@ if __name__ == '__main__':                  # if run as main, not if imported
     cp = si.ConfigParser.SafeConfigParser()    # create config file parser
     cp.read(options.configfn)               # read in config file
 
-    medfn = cp.get('Main', 'MedsFile')      # get name of file to be filtered
+    bninfn = cp.get('Main', 'BnInFile')      # get name of file to be filtered
     synsfn = cp.get('Main', 'SynsFile')     # get name of synonyms file
-
-    # get name of method used to create unique set of synonyms from lines in synonyms file
-    synMethod = cp.get('Main', 'SynMethod') 
 
     outfn = options.outfn       # get name of output file
 
     synlines = si.myos.readlines(synsfn)
-    syns = CREATE_SYN_SET[synMethod](synlines)
+    syns = set([line.split('\t')[0] for line in synlines])
 
-    # the old way before I had two methods
-    #syns = set([' '.join(line.split('|')[0].split('\t')) for line in synlines])
+    bninlines = si.myos.readlines(bninfn)
+    bnins = set([line.split('\t')[0] for line in bninlines])
 
-    medlines = [line.strip() for line in si.myos.readlines(medfn)]
-
-    outlines = []
-
-    for ml in medlines:
-        for i in range(len(ml), 0, -1):
-            subber = ' '.join(ml.split()[:i])
-            if subber in syns:
-                break
-        else:
-            outlines.append(ml)
+    outset = syns.union(bnins)
+    outlines = sorted(list(outset))
 
     si.myos.writelines(outlines, outfn)
-    
