@@ -4,6 +4,8 @@ Author: Scott Halgrim, halgrim.s@ghc.org
 Functionality:
     Tokenizes the synonym->RxNormName map file created at Sunghwan's request so it
     can be used to reduce tokenized mystery meds later on.
+    This script should work to tokenize the list of BNINs and their counts I did in chain 0033
+    so as of 10/23/12 I'm repurposing it for that as well
 '''
 import std_import as si
 

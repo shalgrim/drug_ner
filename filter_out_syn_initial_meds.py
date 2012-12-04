@@ -16,6 +16,37 @@ CREATE_SYN_SET = {
 # get module logger
 logger = si.logging.getLogger('org.ghri.sharp.drug_ner.filter_out_syn_initial_meds')
 
+def filterOutSynInitialMeds(medfn, synsfn, synMethod, outfn=None):
+    '''
+    12/4/12 created and moved out of __main__ so I could coordinate with main.py
+    '''
+    synlines = si.myos.readlines(synsfn)
+    syns = CREATE_SYN_SET[synMethod](synlines)
+
+    # the old way before I had two methods
+    #syns = set([' '.join(line.split('|')[0].split('\t')) for line in synlines])
+
+    medlines = [line.strip() for line in si.myos.readlines(medfn)]
+
+    outlines = []
+
+    for ml in medlines:
+
+        # 12/4/12 fixed bug below where I was running i down from range of ml in chars, not toks
+        tokens = ml.split()
+
+        for i in range(len(tokens), 0, -1):
+            subber = ' '.join(tokens[:i])
+            if subber in syns:
+                break
+        else:
+            outlines.append(ml)
+
+    si.myos.writelines(outlines, outfn)
+    
+
+    return
+
 if __name__ == '__main__':                  # if run as main, not if imported
     
     # usage string to give if user asks for help or gets command line wrong
@@ -42,23 +73,5 @@ if __name__ == '__main__':                  # if run as main, not if imported
 
     outfn = options.outfn       # get name of output file
 
-    synlines = si.myos.readlines(synsfn)
-    syns = CREATE_SYN_SET[synMethod](synlines)
+    filterOutSynInitialMeds(medfn, synsfn, synMethod, outfn)
 
-    # the old way before I had two methods
-    #syns = set([' '.join(line.split('|')[0].split('\t')) for line in synlines])
-
-    medlines = [line.strip() for line in si.myos.readlines(medfn)]
-
-    outlines = []
-
-    for ml in medlines:
-        for i in range(len(ml), 0, -1):
-            subber = ' '.join(ml.split()[:i])
-            if subber in syns:
-                break
-        else:
-            outlines.append(ml)
-
-    si.myos.writelines(outlines, outfn)
-    

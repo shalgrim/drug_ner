@@ -9,6 +9,7 @@ The idea is that you say what algo you want to call on the command line.
 
 import std_import as si
 from collections import defaultdict
+from org.ghri.sharp.drug_ner.filter_out_syn_initial_meds import filterOutSynInitialMeds
 
 def resolveMysteryMeds(mmfn, synfn, outfn=None):
     '''
@@ -89,5 +90,14 @@ if __name__ == '__main__':                  # if run as main, not if imported
         synsfn = cp.get('Main', 'SynsFile')     # get name of synonyms file
         outfn = options.outfn                   # get name of output file
         resolveMysteryMeds(medfn, synsfn, outfn)
+    elif options.method == 'filterOutSynInitialMeds':
+        medfn = cp.get('Main', 'MedsFile')      # get name of file to be filtered
+        synsfn = cp.get('Main', 'SynsFile')     # get name of synonyms file
+
+        # get name of method used to create unique set of synonyms from lines in synonyms file
+        synMethod = cp.get('Main', 'SynMethod') 
+        outfn = options.outfn
+        filterOutSynInitialMeds(medfn, synsfn, synMethod, outfn)
+
     else:
         logger.warning('Unknown method %s'%(options.method))

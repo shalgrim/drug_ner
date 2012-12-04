@@ -13,7 +13,7 @@
     <Name>drug_ner</Name>
     <RootNamespace>drug_ner</RootNamespace>
     <LaunchProvider>Standard Python launcher</LaunchProvider>
-    <CommandLineArguments>G:\CTRHS\SHARP\PROGRAMMING\scott\chains\0069\data\config.txt resolveMysteryMeds -o  G:\CTRHS\SHARP\PROGRAMMING\scott\chains\0070\out\out.txt -l G:\CTRHS\SHARP\PROGRAMMING\scott\chains\0070\out\log.txt -m w</CommandLineArguments>
+    <CommandLineArguments>G:\CTRHS\SHARP\PROGRAMMING\scott\chains\0055\data\config.cfg filterOutSynInitialMeds -o  G:\CTRHS\SHARP\PROGRAMMING\scott\chains\0055\out\out.txt -l G:\CTRHS\SHARP\PROGRAMMING\scott\chains\0055\out\log.txt -m w</CommandLineArguments>
     <InterpreterPath />
     <InterpreterArguments />
   </PropertyGroup>
